@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086724612953",
+    "project_id": "assessment-miles-edu",
+    "storage_bucket": "assessment-miles-edu.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086724612953:android:0fafd88877d6256336a248",
+        "android_client_info": {
+          "package_name": "com.example.assessment_miles_edu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn71man13pgIAms_VQAjF6l0ieM9tCt0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
