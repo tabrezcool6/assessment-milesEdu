@@ -31,7 +31,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.initState();
     _focusNode.requestFocus();
     // Get the current user's UID from the AuthBloc state
-    userUid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
+    userUid = (context.read<AuthBloc>().state as AuthSignInSuccess).uid;
+    // userUid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
 
     if (widget.taskData != null) {
       // If a taskData is provided, initialize the taskData variable
@@ -46,7 +47,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     print('///// CREATE TASk');
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus(); // Dismiss the keyboard
-      userUid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
+      userUid = userUid;
 
       // final posterId =
       //     (context.read<AppUserCubit>().state as AppUserLoggedIn).user.id;
@@ -61,7 +62,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  void _updateBlogOnTap() async {
+  void _updateTask() async {
     print('///// update');
 
     final String title = _titleController.text.trim();
@@ -190,7 +191,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                       onPressed:
                                           taskData == null
                                               ? _createTask
-                                              : _updateBlogOnTap,
+                                              : _updateTask,
 
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
@@ -225,7 +226,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
           );
-        
         },
       ),
     );

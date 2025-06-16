@@ -2,16 +2,20 @@ import 'dart:ui';
 
 import 'package:assessment_miles_edu/core/common/widgets/loader.dart';
 import 'package:assessment_miles_edu/core/utils.dart';
+import 'package:assessment_miles_edu/features/auth/domain/usecases/auth_sign_out_usecase.dart';
+import 'package:assessment_miles_edu/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:assessment_miles_edu/features/task/domain/entity/task_entity.dart';
 import 'package:assessment_miles_edu/features/task/presentation/bloc/task_bloc/task_bloc.dart';
 import 'package:assessment_miles_edu/features/task/presentation/pages/add_task_page.dart';
 import 'package:assessment_miles_edu/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:assessment_miles_edu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:assessment_miles_edu/features/task/presentation/pages/view_task_page.dart';
+import 'package:assessment_miles_edu/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:restart_app/restart_app.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -46,7 +50,10 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     // Get the current user's UID from the AuthBloc state
-    uid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
+    uid = (context.read<AuthBloc>().state as AuthSignInSuccess).uid;
+
+    print('///// HOME UID: $uid');
+    // uid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
 
     context.read<TaskBloc>().add(TaskReadEvent(userUid: uid));
     // print('///////// Tasks for user: $tasks');
@@ -89,8 +96,36 @@ class _HomepageState extends State<Homepage> {
         ),
         automaticallyImplyLeading: false,
         titleSpacing: 20,
+
         // elevation: 0,
         // backgroundColor: Colors.cyan.shade500,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Restart.restartApp();
+            },
+            icon: Icon(Icons.refresh),
+          ),
+          IconButton(
+            onPressed:
+                () => Utils.singleBtnPopAlertDialogBox(
+                  context: context,
+                  title: 'Confirm Log Out?',
+                  desc: '',
+                  onTap1: () {
+                    context.read<AuthBloc>().add(AuthSignOutEvent());
+                    Utils.showSnackBar(context, 'Logged out Successfully');
+
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignInPage()),
+                      (route) => false,
+                    );
+                  },
+                ),
+            icon: const Icon(Icons.logout_rounded, color: Colors.red),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -196,10 +231,7 @@ class _HomepageState extends State<Homepage> {
                                 onDismissed: (direction) {
                                   context.read<TaskBloc>().add(
                                     TaskDeleteEvent(
-                                      userUid:
-                                          (context.read<AuthBloc>().state
-                                                  as AuthSessionSuccess)
-                                              .uid,
+                                      userUid: uid,
                                       taskUid: task.id,
                                     ),
                                   );
@@ -265,10 +297,6 @@ class _HomepageState extends State<Homepage> {
                                                   isCompleted: value,
                                                 ),
                                               );
-                                              // setState(() {
-                                              // task.isCompleted = value;
-                                              // });
-                                              // },
                                             },
                                             activeColor: Colors.indigo.shade400,
                                           ),

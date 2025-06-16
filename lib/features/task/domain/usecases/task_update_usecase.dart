@@ -3,15 +3,21 @@ import 'package:fpdart/fpdart.dart';
 import 'package:assessment_miles_edu/core/error/failures.dart';
 import 'package:assessment_miles_edu/core/usecase/usecase.dart';
 
-/// Use case for signing up a user with email and password.
-/// Decouples the sign-up logic from the repository.
+/// Use case for updating an existing task for a user.
+/// 
+/// This class encapsulates the logic for updating a task, decoupling it from the repository
+/// and making it reusable and testable. It takes [TaskUpdateParams] as input and returns
+/// either a [Failure] or void on success.
 class TaskUpdateUsecase implements UseCase<void, TaskUpdateParams> {
   final TaskRepository taskRepository;
 
-  /// Constructor to inject the `AuthRepository` dependency.
+  /// Constructor to inject the [TaskRepository] dependency.
   TaskUpdateUsecase(this.taskRepository);
 
-  /// Executes the sign-up logic by calling the repository.
+  /// Executes the update task logic by delegating to the repository.
+  ///
+  /// [params] - The parameters required to update a task.
+  /// Returns [Either] a [Failure] on error or [void] on success.
   @override
   Future<Either<Failure, void>> call(TaskUpdateParams params) async {
     return await taskRepository.updateTask(
@@ -25,23 +31,36 @@ class TaskUpdateUsecase implements UseCase<void, TaskUpdateParams> {
   }
 }
 
-/// Parameters required for signing up a user.
-/// Contains the user's name, email, and password.
+/// Parameters required for updating a task.
+/// 
+/// Contains the user's UID, task's UID, and any fields to update (all optional except IDs).
 class TaskUpdateParams {
+  /// The unique identifier of the user who owns the task.
   final String userUid;
-  final String taskUid;
-  String? title;
-  String? description;
-  bool? isCompleted;
-  DateTime? dueDate;
 
-  /// Constructor to initialize the name, email, and password.
+  /// The unique identifier of the task to be updated.
+  final String taskUid;
+
+  /// (Optional) New title for the task.
+  final String? title;
+
+  /// (Optional) New description for the task.
+  final String? description;
+
+  /// (Optional) New completion status for the task.
+  final bool? isCompleted;
+
+  /// (Optional) New due date for the task.
+  final DateTime? dueDate;
+
+  /// Constructor to initialize all fields for task update.
+  /// Only non-null fields will be updated.
   TaskUpdateParams({
     required this.userUid,
     required this.taskUid,
-    required this.title,
-    required this.description,
-    required this.isCompleted,
-    required this.dueDate,
+    this.title,
+    this.description,
+    this.isCompleted,
+    this.dueDate,
   });
 }

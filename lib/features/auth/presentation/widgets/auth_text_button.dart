@@ -1,15 +1,22 @@
-import 'package:assessment_miles_edu/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:flutter/material.dart';
 
+/// A reusable text button widget for authentication pages.
+///
+/// This widget is used for secondary actions such as "Forgot Password?" or navigation links.
+/// It accepts a title and a callback for the button press.
 class AuthTextButtonWidget extends StatelessWidget {
+  /// The text to display on the button.
+  final String btnTitle;
+
+  /// The callback function to execute when the button is pressed.
+  final VoidCallback onPressed;
+
+  /// Creates an [AuthTextButtonWidget] with the given title and callback.
   const AuthTextButtonWidget({
     required this.btnTitle,
     required this.onPressed,
     super.key,
   });
-
-  final String btnTitle;
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {

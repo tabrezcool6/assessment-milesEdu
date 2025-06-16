@@ -7,19 +7,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
-/// Implementation of the AuthRepository interface.
-/// Handles authentication logic by interacting with the data source and managing errors.
+/// Implementation of the [AuthRepository] interface.
+/// Handles authentication logic by interacting with the remote data source,
+/// performing connectivity checks, and mapping exceptions to failures.
 class AuthRepositoryImplementation implements AuthRepository {
   final AuthFirebaseDataSource authFirebaseDataSource;
   final InternetConnection internetConnection;
 
-  /// Constructor for dependency injection.
+  /// Constructor for dependency injection of data source and connectivity checker.
   AuthRepositoryImplementation(
     this.authFirebaseDataSource,
     this.internetConnection,
   );
 
   /// Handles user sign-up with email and password.
+  /// Checks for internet connectivity before proceeding.
+  /// Returns [Failure] if there is no connection or a server error occurs.
   @override
   Future<Either<Failure, void>> signUpWithEmail({
     required String name,
@@ -35,6 +38,7 @@ class AuthRepositoryImplementation implements AuthRepository {
         email: email,
         password: password,
       );
+
       return right(null);
     } on ServerExceptions catch (e) {
       return left(Failure(e.message));
@@ -42,6 +46,8 @@ class AuthRepositoryImplementation implements AuthRepository {
   }
 
   /// Handles user sign-in with email and password.
+  /// Checks for internet connectivity before proceeding.
+  /// Returns [Failure] if there is no connection or a server error occurs.
   @override
   Future<Either<Failure, void>> signInWithEmail({
     required String email,
@@ -62,6 +68,8 @@ class AuthRepositoryImplementation implements AuthRepository {
   }
 
   /// Retrieves the current user session.
+  /// Checks for internet connectivity before proceeding.
+  /// Returns [Failure] if there is no connection, no user is logged in, or a server error occurs.
   @override
   Future<Either<Failure, User>> getUserSession() async {
     try {
@@ -79,6 +87,8 @@ class AuthRepositoryImplementation implements AuthRepository {
   }
 
   /// Sends a password reset email to the user.
+  /// Checks for internet connectivity before proceeding.
+  /// Returns [Failure] if there is no connection or a server error occurs.
   @override
   Future<Either<Failure, void>> resetPassword({required String email}) async {
     try {
@@ -93,6 +103,7 @@ class AuthRepositoryImplementation implements AuthRepository {
   }
 
   /// Signs out the current user.
+  /// Returns [Failure] if a server error occurs.
   @override
   Future<Either<Failure, void>> signOut() async {
     try {

@@ -4,10 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 
 /// Domain Layer: Defines the contract for the authentication repository.
-/// This interface ensures that any implementation must provide these methods.
+/// 
+/// This interface ensures that any implementation must provide these methods,
+/// enabling separation of concerns and easier testing/mocking.
 abstract interface class AuthRepository {
   /// Handles user sign-up with email and password.
-  /// Returns either a `Failure` or a `void` on success.
+  ///
+  /// [name] - The display name of the user.
+  /// [email] - The user's email address.
+  /// [password] - The user's password.
+  ///
+  /// Returns [Either] a [Failure] on error or [void] on success.
   Future<Either<Failure, void>> signUpWithEmail({
     required String name,
     required String email,
@@ -15,21 +22,30 @@ abstract interface class AuthRepository {
   });
 
   /// Handles user sign-in with email and password.
-  /// Returns either a `Failure` or a `void` on success.
+  ///
+  /// [email] - The user's email address.
+  /// [password] - The user's password.
+  ///
+  /// Returns [Either] a [Failure] on error or [void] on success.
   Future<Either<Failure, void>> signInWithEmail({
     required String email,
     required String password,
   });
 
   /// Retrieves the current user session.
-  /// Returns either a `Failure` or the `User` object on success.
+  ///
+  /// Returns [Either] a [Failure] on error or the [User] object on success.
   Future<Either<Failure, User>> getUserSession();
 
   /// Sends a password reset email to the user.
-  /// Returns either a `Failure` or a `void` on success.
+  ///
+  /// [email] - The user's email address.
+  ///
+  /// Returns [Either] a [Failure] on error or [void] on success.
   Future<Either<Failure, void>> resetPassword({required String email});
 
   /// Signs out the current user.
-  /// Returns either a `Failure` or a `void` on success.
+  ///
+  /// Returns [Either] a [Failure] on error or [void] on success.
   Future<Either<Failure, void>> signOut();
 }

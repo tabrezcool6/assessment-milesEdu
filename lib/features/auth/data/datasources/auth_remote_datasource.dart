@@ -8,6 +8,12 @@ abstract class AuthFirebaseDataSource {
   User? get getCurrentUserSession;
 
   /// Signs up a user with email and password.
+  /// 
+  /// [name] - The display name of the user (not used in this implementation).
+  /// [email] - The user's email address.
+  /// [password] - The user's password.
+  /// 
+  /// Throws [ServerExceptions] on failure.
   Future<void> signUpWithEmail({
     required String name,
     required String email,
@@ -15,15 +21,26 @@ abstract class AuthFirebaseDataSource {
   });
 
   /// Signs in a user with email and password.
+  /// 
+  /// [email] - The user's email address.
+  /// [password] - The user's password.
+  /// 
+  /// Throws [ServerExceptions] on failure.
   Future<void> signInWithEmail({
     required String email,
     required String password,
   });
 
   /// Sends a password reset email to the user.
+  /// 
+  /// [email] - The user's email address.
+  /// 
+  /// Throws [ServerExceptions] on failure.
   Future<void> resetPassword({required String email});
 
   /// Signs out the current user.
+  /// 
+  /// Throws [ServerExceptions] on failure.
   Future<void> signOut();
 }
 
@@ -39,6 +56,7 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
   User? get getCurrentUserSession => firebaseAuth.currentUser;
 
   /// Signs up a user with email and password.
+  /// Throws [ServerExceptions] if sign up fails.
   @override
   Future<void> signUpWithEmail({
     required String name,
@@ -50,6 +68,8 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
         email: email,
         password: password,
       );
+      // Optionally, update the display name after sign up if needed.
+      // await firebaseAuth.currentUser?.updateDisplayName(name);
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseAuthException(e);
     } catch (e) {
@@ -58,6 +78,7 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
   }
 
   /// Signs in a user with email and password.
+  /// Throws [ServerExceptions] if sign in fails.
   @override
   Future<void> signInWithEmail({
     required String email,
@@ -76,6 +97,7 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
   }
 
   /// Sends a password reset email to the user.
+  /// Throws [ServerExceptions] if reset fails.
   @override
   Future<void> resetPassword({required String email}) async {
     try {
@@ -88,6 +110,7 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
   }
 
   /// Signs out the current user.
+  /// Throws [ServerExceptions] if sign out fails.
   @override
   Future<void> signOut() async {
     try {
@@ -97,8 +120,9 @@ class AuthFirebaseDataSourceImplementation implements AuthFirebaseDataSource {
     }
   }
 
-  /// Handles FirebaseAuth exceptions and maps them to custom exceptions.
+  /// Handles FirebaseAuth exceptions and maps them to custom [ServerExceptions].
   ServerExceptions _handleFirebaseAuthException(FirebaseAuthException e) {
+    // Print exception for debugging purposes.
     print('////// FirebaseAuthException: $e');
     switch (e.code) {
       case 'weak-password':

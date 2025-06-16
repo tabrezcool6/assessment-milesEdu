@@ -3,17 +3,19 @@ import 'package:assessment_miles_edu/features/task/data/models/task_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Abstract class defining the contract for authentication data source.
-/// This allows flexibility to switch to a different backend in the future.
+/// Abstract class defining the contract for the Task data source.
+/// This abstraction allows for easy replacement or extension of the backend in the future.
 abstract class TaskFirebaseDataSource {
-  /// Signs out the current user.
+  /// Creates a new task for the specified user.
   Future<void> createTask({
     required String userUid,
     required TaskModel taskModel,
   });
 
+  /// Reads all tasks for the specified user.
   Future<List<TaskModel>> readTask({required String userUid});
 
+  /// Updates an existing task for the specified user.
   Future<void> updateTask({
     required String userUid,
     required String taskUid,
@@ -23,16 +25,19 @@ abstract class TaskFirebaseDataSource {
     required DateTime? dueDate,
   });
 
+  /// Deletes a task for the specified user.
   Future<void> deleteTask({required String userUid, required String taskUid});
 }
 
-/// Implementation of the authentication data source using Firebase.
+/// Implementation of the Task data source using Firebase Firestore.
 class TaskFirebaseDataSourceImplementation implements TaskFirebaseDataSource {
   final FirebaseFirestore firebaseFirestore;
 
-  /// Constructor to inject the FirebaseAuth instance.
+  /// Constructor to inject the FirebaseFirestore instance.
   TaskFirebaseDataSourceImplementation(this.firebaseFirestore);
 
+  /// Creates a new task document in Firestore under the user's collection.
+  /// Throws [ServerExceptions] if the operation fails.
   @override
   Future<void> createTask({
     required String userUid,
@@ -43,36 +48,36 @@ class TaskFirebaseDataSourceImplementation implements TaskFirebaseDataSource {
           .collection(userUid)
           .doc(taskModel.id)
           .set(taskModel.toJson());
-
-      // return 'success';
-      // } on PostgrestException catch (e) {
-      //   throw ServerExceptions(e.message);
     } catch (e) {
       throw ServerExceptions(e.toString());
     }
   }
 
+  /// Reads all tasks for the user, sorted by due date descending.
+  /// Throws [ServerExceptions] if the operation fails.
   @override
   Future<List<TaskModel>> readTask({
     required String userUid,
-    String? taskUid,
+    String? taskUid, // Not used, but could be used for filtering a specific task.
   }) async {
     try {
+      // Fetch all documents (tasks) for the user.
       final tasks = await firebaseFirestore.collection(userUid).get();
 
+      // Sort tasks by dueDate descending.
       final sortedDocs = tasks.docs
         ..sort((a, b) => b['dueDate'].compareTo(a['dueDate'] as String));
 
+      // Convert Firestore documents to TaskModel instances.
       return sortedDocs.map((doc) => TaskModel.fromJson(doc.data())).toList();
-
-      // return 'success';
-      // } on PostgrestException catch (e) {
-      //   throw ServerExceptions(e.message);
     } catch (e) {
       throw ServerExceptions(e.toString());
     }
   }
 
+  /// Updates fields of an existing task document in Firestore.
+  /// Only non-null fields are updated.
+  /// Throws [ServerExceptions] if the operation fails.
   @override
   Future<void> updateTask({
     required String userUid,
@@ -83,21 +88,26 @@ class TaskFirebaseDataSourceImplementation implements TaskFirebaseDataSource {
     required DateTime? dueDate,
   }) async {
     try {
-      await firebaseFirestore.collection(userUid).doc(taskUid).set({
-        'title': title,
-        'description': description,
-        'isCompleted': isCompleted,
-        'dueDate': dueDate?.toIso8601String(),
-      }, SetOptions(merge: true));
+      // Prepare the update map, only including non-null fields.
+      final updateData = <String, dynamic>{
+        if (title != null) 'title': title,
+        if (description != null) 'description': description,
+        if (isCompleted != null) 'isCompleted': isCompleted,
+        if (dueDate != null) 'dueDate': dueDate.toIso8601String(),
+      };
 
-      // return 'success';
-      // } on PostgrestException catch (e) {
-      //   throw ServerExceptions(e.message);
+      // Update the document with merge to preserve other fields.
+      await firebaseFirestore
+          .collection(userUid)
+          .doc(taskUid)
+          .set(updateData, SetOptions(merge: true));
     } catch (e) {
       throw ServerExceptions(e.toString());
     }
   }
 
+  /// Deletes a task document from Firestore.
+  /// Throws [ServerExceptions] if the operation fails.
   @override
   Future<void> deleteTask({
     required String userUid,
@@ -110,30 +120,4 @@ class TaskFirebaseDataSourceImplementation implements TaskFirebaseDataSource {
     }
   }
 
-  /// Handles FirebaseAuth exceptions and maps them to custom exceptions.
-  // ServerExceptions _handleFirebaseAuthException(FirebaseAuthException e) {
-  //   print('////// FirebaseAuthException: $e');
-  //   switch (e.code) {
-  //     case 'weak-password':
-  //       return ServerExceptions('The password provided is too weak.');
-  //     case 'email-already-in-use':
-  //       return ServerExceptions('The account already exists for that email.');
-  //     case 'invalid-email':
-  //       return ServerExceptions('The email address is badly formatted.');
-  //     case 'operation-not-allowed':
-  //       return ServerExceptions('Operation not allowed.');
-  //     case 'user-disabled':
-  //       return ServerExceptions('User disabled.');
-  //     case 'user-not-found':
-  //       return ServerExceptions('No user found for that email.');
-  //     case 'wrong-password':
-  //       return ServerExceptions('Wrong password provided for that user.');
-  //     case 'invalid-credential':
-  //       return ServerExceptions(
-  //         'The supplied auth credential is incorrect, malformed or has expired.',
-  //       );
-  //     default:
-  //       return ServerExceptions('An error occurred. Please try again later.');
-  //   }
-  // }
 }

@@ -48,4 +48,50 @@ class Utils {
       },
     );
   }
+
+  ///
+  ///
+  /// Dual Button Alert Dialog Box
+  static singleBtnPopAlertDialogBox({
+    required BuildContext context,
+    required String title,
+    required String desc,
+    required Function() onTap1,
+  }) {
+    // set up the button
+    Widget okButton = TextButton(
+      onPressed: onTap1,
+      style: ButtonStyle(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+      ),
+      child: Text('OK', style: TextStyle(color: AppPallete.primaryColor)),
+    );
+    // set up the button
+    Widget reportButton = TextButton(
+      onPressed: () => Navigator.pop(context),
+      style: ButtonStyle(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+      ),
+      child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      // content: Text(desc),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      backgroundColor: Colors.white,
+      actions: [reportButton, okButton],
+    );
+
+    // show the dialog
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(onWillPop: () => Future.value(false), child: alert);
+      },
+    );
+  }
+
+  ///
 }

@@ -9,6 +9,10 @@ import 'package:assessment_miles_edu/features/task/presentation/pages/home_page.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Page for user sign-up.
+/// 
+/// Provides a form for users to enter their username, email, and password,
+/// and handles registration logic via [AuthBloc]. Displays feedback and navigation based on state.
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -17,20 +21,22 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  ///
+  /// Key for the sign-up form.
   final _formKey = GlobalKey<FormState>();
 
+  /// Controller for the username input field.
   final TextEditingController _usernameController = TextEditingController();
+
+  /// Controller for the email input field.
   final TextEditingController _emailController = TextEditingController();
+
+  /// Controller for the password input field.
   final TextEditingController _passwordController = TextEditingController();
 
+  /// Handles the sign-up button tap.
+  /// Validates the form and triggers the sign-up event.
   void _signUpOnTap() {
     if (_formKey.currentState!.validate()) {
-      // Handle login logic here
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const Homepage()),
-      // );
       FocusScope.of(context).unfocus();
       context.read<AuthBloc>().add(
         AuthSignUpWithEmailEvent(
@@ -42,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  /// Disposes resources when the page is destroyed.
+  /// Disposes controllers when the page is destroyed.
   @override
   void dispose() {
     _usernameController.dispose();
@@ -55,20 +61,17 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
+        // Show error message if sign-up fails.
         if (state is AuthFailure) {
           Utils.showSnackBar(context, state.message);
-        } else if (state is AuthSignUpSuccess) {
+        } 
+        // Show success message and navigate to home page if sign-up succeeds.
+        else if (state is AuthSignUpSuccess) {
           Utils.showSnackBar(context, "Account created successfully!");
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Homepage()),
           );
-          // Navigator.pushAndRemoveUntil(
-          //   context,
-          //   SignInPage.route(),
-          //   (context) => false,
-          // );
         }
       },
       builder: (context, state) {
@@ -83,38 +86,38 @@ class _SignUpPageState extends State<SignUpPage> {
                   // Title
                   AuthTitleWidget(title: "Create Account"),
                   const SizedBox(height: 30),
-              
+
                   // Username Input
                   AuthInputFieldWidget(
                     label: 'Username',
                     controller: _usernameController,
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Email Input
                   AuthInputFieldWidget(
                     label: 'E-mail',
                     controller: _emailController,
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Password Input
                   AuthInputFieldWidget(
                     label: 'Password',
                     controller: _passwordController,
                   ),
                   const SizedBox(height: 30),
-              
+
+                  // Show loader while processing, otherwise show sign up button
                   if (state is AuthLoading)
                     const Loader()
                   else
-                    // Sign Up Button
                     AuthPrimaryButton(
                       btnTitle: "Sign Up",
                       onPressed: _signUpOnTap,
                     ),
                   const SizedBox(height: 20),
-              
+
                   // Login Link
                   AuthTextButtonWidget(
                     btnTitle: "Already have an account? Login",

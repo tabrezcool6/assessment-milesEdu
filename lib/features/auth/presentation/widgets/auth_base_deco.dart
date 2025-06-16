@@ -2,19 +2,29 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+/// A reusable widget that provides a visually appealing background and glassmorphic effect
+/// for authentication-related pages.
+///
+/// This widget wraps its [child] with a gradient background, SafeArea, and a glass-like
+/// blurred container with rounded corners. It is intended to be used as the base decoration
+/// for sign-in, sign-up, and reset password pages.
 class AuthBaseDecorationClass extends StatelessWidget {
-  const AuthBaseDecorationClass({required this.child, super.key});
+  /// The widget to display inside the decorated container.
   final Widget child;
+
+  /// Creates an [AuthBaseDecorationClass] with the given [child].
+  const AuthBaseDecorationClass({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.cyan.shade500, // Background color for SafeArea
+      // Solid background color for the SafeArea.
+      color: Colors.cyan.shade500,
       child: SafeArea(
         child: Scaffold(
           body: Stack(
             children: [
-              // Background Gradient
+              // Background gradient covering the entire screen.
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -24,7 +34,7 @@ class AuthBaseDecorationClass extends StatelessWidget {
                   ),
                 ),
               ),
-              // Glassmorphic Effect
+              // Centered glassmorphic effect container for the form.
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25),
@@ -41,6 +51,7 @@ class AuthBaseDecorationClass extends StatelessWidget {
                           width: 1.5,
                         ),
                       ),
+                      // The actual authentication form or content.
                       child: child,
                     ),
                   ),

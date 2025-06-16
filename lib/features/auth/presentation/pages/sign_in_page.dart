@@ -11,6 +11,10 @@ import 'package:assessment_miles_edu/features/auth/presentation/pages/sign_up_pa
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Page for user sign-in.
+/// 
+/// Provides a form for users to enter their email and password, and handles
+/// authentication logic via [AuthBloc]. Displays feedback and navigation based on state.
 class SignInPage extends StatefulWidget {
   SignInPage({super.key});
 
@@ -19,19 +23,19 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  ///
+  /// Key for the sign-in form.
   final _formKey = GlobalKey<FormState>();
 
+  /// Controller for the email input field.
   final TextEditingController _emailController = TextEditingController();
+
+  /// Controller for the password input field.
   final TextEditingController _passwordController = TextEditingController();
 
+  /// Handles the sign-in button tap.
+  /// Validates the form and triggers the sign-in event.
   void _signInOnTap() {
     if (_formKey.currentState!.validate()) {
-      // Handle login logic here
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const Homepage()),
-      // );
       FocusScope.of(context).unfocus();
       context.read<AuthBloc>().add(
         AuthSignInWithEmailEvent(
@@ -42,7 +46,7 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
-  /// Disposes resources when the page is destroyed.
+  /// Disposes controllers when the page is destroyed.
   @override
   void dispose() {
     _emailController.dispose();
@@ -54,15 +58,12 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
+        // Show error message if sign-in fails.
         if (state is AuthFailure) {
           Utils.showSnackBar(context, state.message);
-        } else if (state is AuthSignInSuccess) {
-          // Navigator.pushAndRemoveUntil(
-          //   context,
-          //   Homepage.route(),
-          //   (context) => false,
-          // );
-
+        } 
+        // Navigate to home page if sign-in succeeds.
+        else if (state is AuthSignInSuccess) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Homepage()),
@@ -98,7 +99,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Forgot Password
+                  // Forgot Password Button
                   Align(
                     alignment: Alignment.centerRight,
                     child: AuthTextButtonWidget(
@@ -115,10 +116,10 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   const SizedBox(height: 20),
 
+                  // Show loader while processing, otherwise show login button
                   if (state is AuthLoading)
                     const Loader()
                   else
-                    // Login Button
                     AuthPrimaryButton(
                       btnTitle: "Login",
                       onPressed: _signInOnTap,

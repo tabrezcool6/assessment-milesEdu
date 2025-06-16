@@ -1,4 +1,5 @@
 import 'package:assessment_miles_edu/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:assessment_miles_edu/core/theme/app_theme.dart';
 import 'package:assessment_miles_edu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:assessment_miles_edu/features/task/presentation/bloc/task_bloc/task_bloc.dart';
 import 'package:assessment_miles_edu/features/task/presentation/pages/home_page.dart';
@@ -52,26 +53,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Assessment - Miles Education Flutter App...',
-      theme: ThemeData(
-        textTheme: GoogleFonts.varelaTextTheme(Theme.of(context).textTheme),
-        dialogTheme: const DialogTheme(
-          backgroundColor: Colors.white, // Set dialog background to white
-        ),
-        appBarTheme: AppBarTheme(
-          titleSpacing: 0,
-          elevation: 0, // Remove AppBar shadow
-          scrolledUnderElevation: 0, // Remove shadow when scrolled
-          backgroundColor: Colors.cyan.shade500, // Set AppBar background color
-          titleTextStyle: GoogleFonts.varela(
-            color: Colors.white, // Set AppBar title text color
-            fontSize: 20, // Set AppBar title font size
-            fontWeight: FontWeight.w600, // Set AppBar title font weight
-          ),
-          iconTheme: IconThemeData(
-            color: Colors.white, // Change the back button color to white
-          ),
-        ),
-      ),
+      theme: AppTheme.themeData(context),
+
       home: BlocSelector<AppUserCubit, AppUserState, bool>(
         selector: (state) {
           // Check if the user is logged in
