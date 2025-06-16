@@ -25,26 +25,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  // final List<Map<String, dynamic>> _todos = [
-  //   {
-  //     'title': 'Buy groceries',
-  //     'subtitle': 'Buy groceries urgent',
-  //     'isDone': false,
-  //     'date': DateTime.now(),
-  //   },
-  //   {'title': 'Walk the dog', 'isDone': true, 'date': DateTime.now()},
-  //   {
-  //     'title': 'Complete Flutter project',
-  //     'isDone': false,
-  //     'date': DateTime.now().add(const Duration(days: 1)),
-  //   },
-  //   {
-  //     'title': 'Call mom',
-  //     'isDone': false,
-  //     'date': DateTime.now().add(const Duration(days: 2)),
-  //   },
-  // ];
-
   String uid = '';
   @override
   void initState() {
@@ -52,40 +32,15 @@ class _HomepageState extends State<Homepage> {
     // Get the current user's UID from the AuthBloc state
     uid = (context.read<AuthBloc>().state as AuthSignInSuccess).uid;
 
-    print('///// HOME UID: $uid');
-    // uid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
 
     context.read<TaskBloc>().add(TaskReadEvent(userUid: uid));
-    // print('///////// Tasks for user: $tasks');
-
-    print('//// UUID $uid');
+   
   }
 
-  // void _deleteTodoItem(int index) {
-  //   setState(() {
-  //     _todos.removeAt(index);
-  //   });
-  // }
-
-  // void _toggleTodoStatus(int index) {
-  //   setState(() {
-  //     _todos[index]['isDone'] = !_todos[index]['isDone'];
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    // Group tasks by date
-    // final Map<String, List<Map<String, dynamic>>> groupedTodos = {};
-    // for (var todo in _todos) {
-    //   final dateKey = DateFormat('yyyy-MM-dd').format(todo['date']);
-    //   if (!groupedTodos.containsKey(dateKey)) {
-    //     groupedTodos[dateKey] = [];
-    //   }
-    //   groupedTodos[dateKey]!.add(todo);
-    // }
-
-    // final groupedEntries = groupedTodos.entries.toList();
+   
 
     return Scaffold(
       appBar: AppBar(
