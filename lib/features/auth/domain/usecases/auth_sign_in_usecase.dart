@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:assessment_miles_edu/core/error/failures.dart';
 import 'package:assessment_miles_edu/core/usecase/usecase.dart';
@@ -8,7 +9,7 @@ import 'package:assessment_miles_edu/features/auth/domain/repository/auth_reposi
 /// This class encapsulates the sign-in logic, decoupling it from the repository
 /// and making it reusable and testable. It takes [AuthSignInParams] as input and returns
 /// either a [Failure] or void on success.
-class AuthSignInWithEmail implements UseCase<void, AuthSignInParams> {
+class AuthSignInWithEmail implements UseCase<User, AuthSignInParams> {
   final AuthRepository authRepository;
 
   /// Constructor to inject the [AuthRepository] dependency.
@@ -19,7 +20,7 @@ class AuthSignInWithEmail implements UseCase<void, AuthSignInParams> {
   /// [params] - The parameters required to sign in.
   /// Returns [Either] a [Failure] on error or [void] on success.
   @override
-  Future<Either<Failure, void>> call(AuthSignInParams params) async {
+  Future<Either<Failure, User>> call(AuthSignInParams params) async {
     return await authRepository.signInWithEmail(
       email: params.email,
       password: params.password,

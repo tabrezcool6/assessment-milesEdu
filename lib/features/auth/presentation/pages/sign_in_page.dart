@@ -63,7 +63,7 @@ class _SignInPageState extends State<SignInPage> {
           Utils.showSnackBar(context, state.message);
         } 
         // Navigate to home page if sign-in succeeds.
-        else if (state is AuthSignInSuccess) {
+        else if (state is AuthSuccess) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Homepage()),

@@ -66,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Utils.showSnackBar(context, state.message);
         } 
         // Show success message and navigate to home page if sign-up succeeds.
-        else if (state is AuthSignUpSuccess) {
+        else if (state is AuthSuccess) {
           Utils.showSnackBar(context, "Account created successfully!");
           Navigator.push(
             context,

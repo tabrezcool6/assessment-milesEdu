@@ -60,7 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   /// Handles the sign-up event.
-  /// Calls the sign-up use case and emits either [AuthFailure] or [AuthSignInSuccess].
+  /// Calls the sign-up use case and emits either [AuthFailure] or [AuthSuccess].
   Future<void> _onAuthSignUpWithEmail(
     AuthSignUpWithEmailEvent event,
     Emitter<AuthState> emit,
@@ -75,14 +75,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     response.fold(
       (failure) => emit(AuthFailure(failure.message)),
-
-      // (currentUser) => _emitAuthSuccess(null, emit),
-      (_) => emit(AuthSignInSuccess(uid: '')),
+      (currentUser) => _emitAuthSuccess(currentUser, emit),
     );
   }
 
   /// Handles the sign-in event.
-  /// Calls the sign-in use case and emits either [AuthFailure] or [AuthSignInSuccess].
+  /// Calls the sign-in use case and emits either [AuthFailure] or [AuthSuccess].
   Future<void> _onAuthSignInWithEmail(
     AuthSignInWithEmailEvent event,
     Emitter<AuthState> emit,
@@ -93,10 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     response.fold(
       (failure) => emit(AuthFailure(failure.message)),
-      // (currentUser) => _emitAuthSuccess(null, emit),
-      (_) => emit(AuthSignInSuccess(uid: '')),
-
-      // (_) => emit(AuthSignInSuccess()),
+      (currentUser) => _emitAuthSuccess(currentUser, emit),
     );
   }
 
@@ -143,18 +138,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (failure) => emit(AuthSessionFailure()),
       (currentUser) => _emitAuthSuccess(currentUser, emit),
-      // {
-      //   // Update the app user cubit with the current user and emit session success.
-      //   _appUserCubit.currentUser(currentUser);
-      //   emit(AuthSignInSuccess(uid: currentUser.uid));
-
-      // }
     );
   }
 
-  //
+  // common method to emit success state with current user
+  /// Emits the authentication success state with the current user.
   void _emitAuthSuccess(User? user, Emitter<AuthState> emit) {
     _appUserCubit.currentUser(user);
-    emit(AuthSignInSuccess(uid: user!.uid));
+    emit(AuthSuccess(uid: user!.uid));
   }
 }

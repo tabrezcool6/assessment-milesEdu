@@ -183,9 +183,8 @@ class ViewTaskPage extends StatelessWidget {
                                 TaskDeleteEvent(
                                   userUid:
                                       (context.read<AuthBloc>().state
-                                              as AuthSignInSuccess)
+                                              as AuthSuccess)
                                           .uid,
-                                  // userUid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;,
                                   taskUid: taskData.id,
                                 ),
                               );

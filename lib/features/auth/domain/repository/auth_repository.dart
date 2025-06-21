@@ -15,7 +15,7 @@ abstract interface class AuthRepository {
   /// [password] - The user's password.
   ///
   /// Returns [Either] a [Failure] on error or [void] on success.
-  Future<Either<Failure, void>> signUpWithEmail({
+  Future<Either<Failure, User>> signUpWithEmail({
     required String name,
     required String email,
     required String password,
@@ -27,7 +27,7 @@ abstract interface class AuthRepository {
   /// [password] - The user's password.
   ///
   /// Returns [Either] a [Failure] on error or [void] on success.
-  Future<Either<Failure, void>> signInWithEmail({
+  Future<Either<Failure, User>> signInWithEmail({
     required String email,
     required String password,
   });

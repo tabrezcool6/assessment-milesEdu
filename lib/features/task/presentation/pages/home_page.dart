@@ -29,19 +29,16 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    // Get the current user's UID from the AuthBloc state
-    uid = (context.read<AuthBloc>().state as AuthSignInSuccess).uid;
 
+    /// Get the current user's UID from the AuthBloc state
+    uid = (context.read<AuthBloc>().state as AuthSuccess).uid;
 
+    /// Fetch tasks for the user when the page is initialized
     context.read<TaskBloc>().add(TaskReadEvent(userUid: uid));
-   
   }
-
 
   @override
   Widget build(BuildContext context) {
-   
-
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -51,16 +48,8 @@ class _HomepageState extends State<Homepage> {
         ),
         automaticallyImplyLeading: false,
         titleSpacing: 20,
-
-        // elevation: 0,
-        // backgroundColor: Colors.cyan.shade500,
         actions: [
-          IconButton(
-            onPressed: () {
-              Restart.restartApp();
-            },
-            icon: Icon(Icons.refresh),
-          ),
+          /// Log out button
           IconButton(
             onPressed:
                 () => Utils.singleBtnPopAlertDialogBox(

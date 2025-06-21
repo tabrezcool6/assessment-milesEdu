@@ -96,4 +96,6 @@ To add Firebase to your project:
 
 Note: There is "User Data Fetch error" while after Login And SignUp. I have handled it for now by Clicking "Refresh Button" on Top right corner of Home Screen, i.e next to Log Out Button. Apart from that the code could be much more optimized, but I had to submit as per Deadline, Since I will be unavailable and could not give time for the project for next Four Days. So I thought it is best to submit the project at current phase itself. Later after this period of time, i'll try to resolve and optimize the app and push the changes.
 
+edit as of 21/06/1999: The issue regarding "User Data fetch" has been resolved. Kindly review the project and update me regarding it.
+
 Regards

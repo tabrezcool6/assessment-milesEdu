@@ -31,8 +31,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.initState();
     _focusNode.requestFocus();
     // Get the current user's UID from the AuthBloc state
-    userUid = (context.read<AuthBloc>().state as AuthSignInSuccess).uid;
-    // userUid = (context.read<AuthBloc>().state as AuthSessionSuccess).uid;
+    userUid = (context.read<AuthBloc>().state as AuthSuccess).uid;
 
     if (widget.taskData != null) {
       // If a taskData is provided, initialize the taskData variable
@@ -47,10 +46,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     print('///// CREATE TASk');
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus(); // Dismiss the keyboard
-      userUid = userUid;
 
-      // final posterId =
-      //     (context.read<AppUserCubit>().state as AppUserLoggedIn).user.id;
       context.read<TaskBloc>().add(
         TaskCreateEvent(
           userUid: userUid,

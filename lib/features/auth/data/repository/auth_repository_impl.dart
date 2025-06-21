@@ -24,7 +24,7 @@ class AuthRepositoryImplementation implements AuthRepository {
   /// Checks for internet connectivity before proceeding.
   /// Returns [Failure] if there is no connection or a server error occurs.
   @override
-  Future<Either<Failure, void>> signUpWithEmail({
+  Future<Either<Failure, User>> signUpWithEmail({
     required String name,
     required String email,
     required String password,
@@ -39,7 +39,13 @@ class AuthRepositoryImplementation implements AuthRepository {
         password: password,
       );
 
-      return right(null);
+      final userSession = authFirebaseDataSource.getCurrentUserSession;
+
+      if (userSession == null) {
+        return left(Failure('User session is null after sign-up'));
+      }
+
+      return right(userSession);
     } on ServerExceptions catch (e) {
       return left(Failure(e.message));
     }
@@ -49,7 +55,7 @@ class AuthRepositoryImplementation implements AuthRepository {
   /// Checks for internet connectivity before proceeding.
   /// Returns [Failure] if there is no connection or a server error occurs.
   @override
-  Future<Either<Failure, void>> signInWithEmail({
+  Future<Either<Failure, User>> signInWithEmail({
     required String email,
     required String password,
   }) async {
@@ -61,7 +67,13 @@ class AuthRepositoryImplementation implements AuthRepository {
         email: email,
         password: password,
       );
-      return right(null);
+
+      final userSession = authFirebaseDataSource.getCurrentUserSession;
+
+      if (userSession == null) {
+        return left(Failure('User session is null after sign-in'));
+      }
+      return right(userSession);
     } on ServerExceptions catch (e) {
       return left(Failure(e.message));
     }
